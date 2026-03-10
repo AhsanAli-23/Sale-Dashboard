@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MY WORK</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+
+    #container {
+      height: 100%;
+      width: 100%;
+      max-height: 400px;
+      min-height: 300px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .absolute:not(.stats-cards) { position: static; }
+      .w-full { width: 100% !important; }
+      .h-auto { height: auto !important; }
+      .text-lg { font-size: 1rem; }
+      .text-xs { font-size: 0.65rem; }
+      .text-base { font-size: 0.85rem; }
+      .p-3 { padding: 0.5rem; }
+      .min-w-\[120px\] { min-width: 70px; }
+    }
+
+    @media (max-width: 400px) {
+      .stats-cards { flex-direction: column; align-items: center; gap: 0.5rem; }
+      .min-w-\[120px\] { min-width: 100%; }
+    }
+  </style>
+</head>
+<body class="m-0 font-sans">
+  <div class="relative w-full h-[160px] sm:h-[200px] md:h-[240px] bg-gray-800">
+    <img src="background.jpg" alt="Background" class="w-full h-full object-cover  block">
+    
+    <div class="absolute top-4 sm:top-6 left-4 sm:left-8 text-white text-lg sm:text-2xl font-semibold">Online Retail Sales Dashboard</div>
+
+    <div class="absolute top-4 right-4 sm:top-5 sm:right-8 bg-white/10 backdrop-blur-md rounded-full flex items-center px-3 py-2 gap-2 sm:gap-4 text-white text-xs sm:text-sm">
+      <span>Quantity</span>
+      <label class="relative inline-block w-9 h-5 sm:w-11 sm:h-6">
+        <input type="checkbox" checked class="opacity-0 w-0 h-0 peer">
+        <span class="absolute inset-0 bg-gray-300 rounded-full transition peer-checked:bg-blue-500"></span>
+        <span class="absolute h-4 w-4 sm:h-[18px] sm:w-[18px] left-[2px] sm:left-[3px] bottom-[2px] sm:bottom-[3px] bg-white rounded-full transition-transform peer-checked:translate-x-[16px] sm:peer-checked:translate-x-[20px]"></span>
+      </label>
+      <span>Sales</span>
+      <span>March 2022</span>
+      <i class="fas fa-sliders text-white opacity-80 text-sm sm:text-base"></i>
+    </div>
+
+    <div class="absolute stats-cards bottom-8 sm:bottom-12 md:bottom-20 left-4 right-4 flex flex-wrap justify-between gap-2 sm:gap-4">
+      <div class="flex-1 min-w-[120px] bg-white/10 backdrop-blur-md rounded-lg p-3 sm:p-4 text-white flex items-center gap-2 sm:gap-3">
+        <i class="fas fa-users text-base sm:text-lg"></i>
+        <div class="flex flex-col">
+          <div class="text-xs opacity-80">Customers</div>
+          <div class="text-base sm:text-lg font-bold">1,012</div>
+        </div>
+      </div>
+      <div class="flex-1 min-w-[120px] bg-white/10 backdrop-blur-md rounded-lg p-3 sm:p-4 text-white flex items-center gap-2 sm:gap-3">
+        <i class="fas fa-shopping-bag text-base sm:text-lg"></i>
+        <div class="flex flex-col">
+          <div class="text-xs opacity-80">Products</div>
+          <div class="text-base sm:text-lg font-bold">20.2K</div>
+        </div>
+      </div>
+      <div class="flex-1 min-w-[120px] bg-white/10 backdrop-blur-md rounded-lg p-3 sm:p-4 text-white flex items-center gap-2 sm:gap-3">
+        <i class="fas fa-dollar-sign text-base sm:text-lg"></i>
+        <div class="flex flex-col">
+          <div class="text-xs opacity-80">Sales</div>
+          <div class="text-base sm:text-lg font-bold">$573.3K</div>
+        </div>
+      </div>
+      <div class="flex-1 min-w-[120px] bg-white/10 backdrop-blur-md rounded-lg p-3 sm:p-4 text-white flex items-center gap-2 sm:gap-3">
+        <i class="fas fa-chart-bar text-base sm:text-lg"></i>
+        <div class="flex flex-col">
+          <div class="text-xs opacity-80">Avg Sales</div>
+          <div class="text-base sm:text-lg font-bold">$201.2K</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative -mt-4 sm:-mt-6 md:-mt-8 mx-4 sm:mx-8 flex flex-col lg:flex-row gap-4 sm:gap-6 rounded-lg overflow-visible">
+    <div class="w-full lg:w-1/2 bg-white rounded-lg shadow-inner shadow-md">
+      <div class="flex flex-col sm:flex-row h-[300px] sm:h-[400px]">
+        <div id="container" class="w-full sm:w-[60%]"></div>
+        <div class="w-full sm:w-[40%] p-3 sm:p-4 bg-white font-sans">
+          <h3 class="text-base sm:text-lg mb-2 font-bold font-sans pb-2 rounded-lg">Top locations</h3>
+          <ol class="pl-3 text-xs sm:text-sm m-0 space-y-1 ml-3">
+            <li class="flex justify-between">United Kingdom <span class="bg-[#9cb2c9] px-2 py-1 rounded">$467.1K</span></li>
+            <li class="flex justify-between">Netherlands <span class="bg-[#eef2f7] px-2 py-1 rounded">$202.4K</span></li>
+            <li class="flex justify-between">EIRE <span class="bg-[#eef2f7] px-2 py-1 rounded">$118.3K</span></li>
+            <li class="flex justify-between">France <span class="bg-[#eef2f7] px-2 py-1 rounded">$124.6K</span></li>
+            <li class="flex justify-between">Germany <span class="bg-[#eef2f7] px-2 py-1 rounded">$194.4K</span></li>
+            <li class="flex justify-between">Finland <span class="bg-[#eef2f7] px-2 py-1 rounded">$105.4K</span></li>
+            <li class="flex justify-between">Spain <span class="bg-[#eef2f7] px-2 py-1 rounded">$501.4K</span></li>
+            <li class="flex justify-between">Sweden <span class="bg-[#eef2f7] px-2 py-1 rounded">$204.7K</span></li>
+            <li class="flex justify-between">Denmark <span class="bg-[#eef2f7] px-2 py-1 rounded">$314.0K</span></li>
+            <li class="flex justify-between">China <span class="bg-[#eef2f7] px-2 py-1 rounded">$214.9K</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full lg:w-1/2 bg-white rounded-lg shadow-inner shadow-md">
+      <h2 class="text-base sm:text-lg font-bold mt-2 p-3">Top Sold Products</h2>
+      <div class="space-y-4 sm:space-y-5 p-4 sm:p-7 pt-1">
+        <div class="flex items-center justify-between gap-2 sm:gap-4">
+          <div class="w-[38%] text-xs sm:text-sm truncate">Regency cakestand 3 tier</div>
+          <div class="w-[8%] text-xs sm:text-sm text-gray-500 text-right">2.5%</div>
+          <div class="w-[40%] bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full w-[100%]"></div>
+          </div>
+          <div class="w-[14%] text-xs sm:text-sm font-medium text-right text-gray-700">$14.4K</div>
+        </div>
+        <div class="flex items-center justify-between gap-2 sm:gap-4">
+          <div class="w-[38%] text-xs sm:text-sm truncate">Jumbo bag red retrospot</div>
+          <div class="w-[8%] text-xs sm:text-sm text-gray-500 text-right">1.5%</div>
+          <div class="w-[40%] bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full w-[60%]"></div>
+          </div>
+          <div class="w-[14%] text-xs sm:text-sm font-medium text-right text-gray-700">$8.5K</div>
+        </div>
+        <div class="flex items-center justify-between gap-2 sm:gap-4">
+          <div class="w-[38%] text-xs sm:text-sm truncate">Party bunting</div>
+          <div class="w-[8%] text-xs sm:text-sm text-gray-500 text-right">1.1%</div>
+          <div class="w-[40%] bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full w-[45%]"></div>
+          </div>
+          <div class="w-[14%] text-xs sm:text-sm font-medium text-right text-gray-700">$6.1K</div>
+        </div>
+        <div class="flex items-center justify-between gap-2 sm:gap-4">
+          <div class="w-[38%] text-xs sm:text-sm truncate">Postage</div>
+          <div class="w-[8%] text-xs sm:text-sm text-gray-500 text-right">0.9%</div>
+          <div class="w-[40%] bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full w-[38%]"></div>
+          </div>
+          <div class="w-[14%] text-xs sm:text-sm font-medium text-right text-gray-700">$5.3K</div>
+        </div>
+        <div class="flex items-center justify-between gap-2 sm:gap-4">
+          <div class="w-[38%] text-xs sm:text-sm truncate">White hanging heart holder</div>
+          <div class="w-[8%] text-xs sm:text-sm text-gray-500 text-right">0.9%</div>
+          <div class="w-[40%] bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full w-[38%]"></div>
+          </div>
+          <div class="w-[14%] text-xs sm:text-sm font-medium text-right text-gray-700">$5.3K</div>
+        </div>
+        <div class="flex items-center justify-between gap-2 sm:gap-4">
+          <div class="w-[38%] text-xs sm:text-sm truncate">Jumbo bag strawberry</div>
+          <div class="w-[8%] text-xs sm:text-sm text-gray-500 text-right">0.9%</div>
+          <div class="w-[40%] bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full w-[35%]"></div>
+          </div>
+          <div class="w-[14%] text-xs sm:text-sm font-medium text-right text-gray-700">$4.9K</div>
+        </div>
+        <div class="flex items-center justify-between gap-2 sm:gap-4">
+          <div class="w-[38%] text-xs sm:text-sm truncate">Jumbo bag pink polkadot</div>
+          <div class="w-[8%] text-xs sm:text-sm text-gray-500 text-right">0.8%</div>
+          <div class="w-[40%] bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full w-[33%]"></div>
+          </div>
+          <div class="w-[14%] text-xs sm:text-sm font-medium text-right text-gray-700">$4.7K</div>
+        </div>
+        <div class="flex items-center justify-between gap-2 sm:gap-4">
+          <div class="w-[38%] text-xs sm:text-sm truncate">Assorted bird ornament</div>
+          <div class="w-[8%] text-xs sm:text-sm text-gray-500 text-right">0.7%</div>
+          <div class="w-[40%] bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full w-[28%]"></div>
+          </div>
+          <div class="w-[14%] text-xs sm:text-sm font-medium text-right text-gray-700">$4.0K</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-4 sm:gap-6 mx-4 sm:mx-8 mt-4 sm:mt-8">
+    <div class="w-full lg:w-1/2 bg-white rounded-lg shadow-inner shadow-md">
+      <h2 class="text-base sm:text-lg font-semibold p-4 sm:p-5 text-md">Customer Details</h2>
+      <div class="overflow-auto p-4 sm:p-5 mb-4 sm:mb-7 ml-3 pt-1">
+        <table class="w-full text-xs sm:text-sm">
+          <thead>
+            <tr class="text-left border-b">
+              <th class="py-2">Customer ID</th>
+              <th>Country</th>
+              <th>Day of Latest purchase</th>
+              <th>No of Purchases</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b">
+              <td class="py-2">14646</td>
+              <td>Netherlands</td>
+              <td>08 Dec 2022</td>
+              <td>4</td>
+              <td>
+                <div class="flex items-center">
+                  <div class="bg-blue-500 h-2 w-24 sm:w-40 mr-2 rounded"></div>
+                  <span class="text-xs sm:text-sm font-semibold">$21.5K</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="border-b">
+              <td class="py-2">17450</td>
+              <td>United Kingdom</td>
+              <td>01 Dec 2022</td>
+              <td>3</td>
+              <td>
+                <div class="flex items-center">
+                  <div class="bg-blue-500 h-2 w-16 sm:w-24 mr-2 rounded"></div>
+                  <span class="text-xs sm:text-sm font-semibold">$13.5K</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="border-b">
+              <td class="py-2">15769</td>
+              <td>United Kingdom</td>
+              <td>02 Dec 2022</td>
+              <td>3</td>
+              <td>
+                <div class="flex items-center">
+                  <div class="bg-blue-500 h-2 w-12 sm:w-20 mr-2 rounded"></div>
+                  <span class="text-xs sm:text-sm font-semibold">$13.0K</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="border-b">
+              <td class="py-2">14156</td>
+              <td>EIRE</td>
+              <td>30 Nov 2022</td>
+              <td>3</td>
+              <td>
+                <div class="flex items-center">
+                  <div class="bg-blue-500 h-2 w-10 sm:w-16 mr-2 rounded"></div>
+                  <span class="text-xs sm:text-sm font-semibold">$9.7K</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="border-b">
+              <td class="py-2">13694</td>
+              <td>United Kingdom</td>
+              <td>06 Dec 2022</td>
+              <td>3</td>
+              <td>
+                <div class="flex items-center">
+                  <div class="bg-blue-500 h-2 w-8 sm:w-14 mr-2 rounded"></div>
+                  <span class="text-xs sm:text-sm font-semibold">$8.1K</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-2">17511</td>
+              <td>United Kingdom</td>
+              <td>07 Dec 2022</td>
+              <td>3</td>
+              <td>
+                <div class="flex items-center">
+                  <div class="bg-blue-500 h-2 w-8 sm:w-12 mr-2 rounded"></div>
+                  <span class="text-xs sm:text-sm font-semibold">$7.2K</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="w-full lg:w-1/2 bg-white rounded-lg shadow-inner shadow-md p-4 sm:p-10">
+      <canvas id="dailySalesChart"></canvas>
+    </div>
+  </div>
+
+  <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+  <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/maps/modules/accessibility.js"></script>
+  <script src="https://code.highcharts.com/modules/geoheatmap.js"></script>
+
+  <script>
+    (async () => {
+      const topology = await fetch(
+        'https://code.highcharts.com/mapdata/custom/europe.topo.json'
+      ).then(response => response.json());
+
+      const salesData = [
+        { lon: -0.13, lat: 51.51, value: 13.97, name: 'United Kingdom' },
+        { lon: 4.90, lat: 52.37, value: 6.07, name: 'Netherlands' },
+        { lon: -6.26, lat: 53.35, value: 3.54, name: 'EIRE' },
+        { lon: 2.35, lat: 48.86, value: 3.73, name: 'France' },
+        { lon: 13.41, lat: 52.52, value: 5.82, name: 'Germany' },
+        { lon: 24.94, lat: 60.17, value: 3.16, name: 'Finland' },
+        { lon: -3.70, lat: 40.42, value: 15.00, name: 'Spain' },
+        { lon: 18.06, lat: 59.33, value: 6.13, name: 'Sweden' },
+        { lon: 12.57, lat: 55.68, value: 9.40, name: 'Denmark' }
+      ];
+
+      const chart = Highcharts.mapChart('container', {
+        chart: {
+          map: topology,
+          events: {
+            load: function () {
+              const chart = this;
+              function resizeMap() {
+                const container = document.getElementById('container');
+                chart.setSize(container.offsetWidth, container.offsetHeight);
+              }
+              window.addEventListener('resize', resizeMap);
+              setTimeout(resizeMap, 100); // Ensure initial render on mobile
+              resizeMap();
+            }
+          }
+        },
+        credits: {
+          enabled: false
+        },
+        title: {
+          text: 'Top Sales Location',
+          align: 'left'
+        },
+        subtitle: {
+          align: 'left'
+        },
+        colorAxis: {
+          min: 0,
+          max: 15,
+          minColor: 'rgba(0, 34, 255, 0.1)',
+          maxColor: 'rgba(0, 34, 255, 1)',
+          visible: false
+        },
+        series: [
+          {
+            name: 'Europe',
+            borderColor: 'rgba(0, 0, 0, 0.4)',
+            states: {
+              inactive: {
+                enabled: false
+              }
+            },
+            accessibility: {
+              exposeAsGroupOnly: true
+            }
+          },
+          {
+            type: 'geoheatmap',
+            name: 'TopSalesLocation',
+            opacity: 0.7,
+            colsize: 5,
+            rowsize: 5,
+            borderWidth: 1,
+            interpolation: {
+              enabled: true,
+              blur: 2
+            },
+            data: salesData,
+            tooltip: {
+              pointFormat: '{point.name}: ${point.value:,.0f}'
+            }
+          }
+        ]
+      });
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const ctx = document.getElementById('dailySalesChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ["Mar 3", "Mar 8", "Mar 13", "Mar 18", "Mar 23", "Mar 28", "Apr 2"],
+          datasets: [
+            {
+              label: "No of purchase",
+              data: [40, 30, 50, 20, 60, 70, 50],
+              backgroundColor: "rgba(173, 216, 230, 0.5)",
+              yAxisID: "y1"
+            },
+            {
+              type: "line",
+              label: "Sales",
+              data: [20000, 18000, 12000, 5000, 25000, 15000, 16000],
+              borderColor: "#3b82f6",
+              borderWidth: 2,
+              fill: false,
+              yAxisID: "y2"
+            }
+          ]
+        },
+        options: {
+          plugins: {
+            title: { display: true, text: "Daily Sales Trend", align: "start", font: { size: 16 } },
+            subtitle: { display: true, text: "▼ 13.2% vs. previous day", align: "start", color: "#dc2626", font: { size: 12 }, padding: { bottom: 10 } },
+            legend: { position: "top", align: "end", labels: { boxWidth: 10, padding: 10, generateLabels: [{ text: "* Sales", fillStyle: "#3b82f6", strokeStyle: "#3b82f6", lineWidth: 2 }, { text: "No of purchase", fillStyle: "rgba(173, 216, 230, 0.5)", strokeStyle: "rgba(173, 216, 230, 0.5)" }] } }
+          },
+          scales: {
+            y1: { position: "left", min: 0, max: 60, ticks: { stepSize: 20 }, grid: { display: false } },
+            y2: { position: "right", min: 0, max: 30000, ticks: { stepSize: 10000, callback: value => "$" + (value / 1000) + ".0K" }, grid: { display: false } },
+            x: { grid: { display: false } }
+          },
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    });
+  </script>
+</body>
+</html>
